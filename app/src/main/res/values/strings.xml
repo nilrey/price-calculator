@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">price_calculator</string>
+    <string name="label_price">Price</string>
+    <string name="label_volume">Volume</string>
+    <string name="button_calculate">Calculate</string>
+    <string name="label_result">Result:</string>
+    <string name="button_compare">Compare</string>
+    <string name="label_comparison_table">Comparison Table:</string>
+</resources>
