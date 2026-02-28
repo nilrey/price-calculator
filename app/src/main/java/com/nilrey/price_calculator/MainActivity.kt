@@ -57,7 +57,12 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
     var lastPrice by remember { mutableStateOf<Double?>(null) }
     var lastVolume by remember { mutableStateOf<Double?>(null) }
 
-    LazyColumn(modifier = modifier.padding(16.dp)) {
+    LazyColumn(
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         item {
             Text(
                 text = stringResource(R.string.info_text),
