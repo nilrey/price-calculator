@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.nilrey.price_calculator.ui.theme.Price_calculatorTheme
@@ -39,6 +40,8 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
     var result by remember { mutableStateOf<Double?>(null) }
     var showCompare by remember { mutableStateOf(false) }
     var compareList by remember { mutableStateOf(listOf<CompareEntry>()) }
+    var lastPrice by remember { mutableStateOf<Double?>(null) }
+    var lastVolume by remember { mutableStateOf<Double?>(null) }
 
     Column(modifier = modifier.padding(16.dp)) {
         OutlinedTextField(
@@ -61,27 +64,37 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
                 val volumeVal = volume.toDoubleOrNull()
                 if (priceVal != null && volumeVal != null && volumeVal != 0.0) {
                     result = (priceVal * 1000) / volumeVal
+                    lastPrice = priceVal
+                    lastVolume = volumeVal
                     showCompare = true
+                    price = ""
+                    volume = ""
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Calculate")
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         if (result != null) {
-            Text("Result: ${"%.2f".format(result)}", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "%.1f".format(result),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 48.sp,
+                    color = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
         }
         if (showCompare && result != null) {
             Button(
                 onClick = {
-                    val priceVal = price.toDoubleOrNull()!!
-                    val volumeVal = volume.toDoubleOrNull()!!
-                    compareList = compareList + CompareEntry(priceVal, volumeVal, result!!)
+                    compareList = compareList + CompareEntry(lastPrice!!, lastVolume!!, result!!)
                     showCompare = false
                     result = null
-                    price = ""
-                    volume = ""
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
