@@ -57,6 +57,11 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
     var lastVolume by remember { mutableStateOf<Double?>(null) }
 
     Column(modifier = modifier.padding(16.dp)) {
+        Text(
+            text = stringResource(R.string.info_text),
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
         OutlinedTextField(
             value = price,
             onValueChange = { price = it },

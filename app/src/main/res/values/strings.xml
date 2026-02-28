@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">price_calculator</string>
+    <string name="info_text">Укажите цену и объем указанные на товаре</string>
     <string name="label_price">Цена</string>
     <string name="label_volume">Объём</string>
-    <string name="button_calculate">Рассчитать</string>
+    <string name="button_calculate">Рассчитать за килограмм</string>
     <string name="button_add_to_compare">Добавить для сравнения</string>
     <string name="label_comparison_table">Таблица сравнения:</string>
     <string name="column_price">Цена</string>
