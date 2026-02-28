@@ -30,13 +30,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class CompareEntry(val price: Double, val volume: Double, val result: Double)
+
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier) {
     var price by remember { mutableStateOf("") }
     var volume by remember { mutableStateOf("") }
     var result by remember { mutableStateOf<Double?>(null) }
     var showCompare by remember { mutableStateOf(false) }
-    var compareList by remember { mutableStateOf(listOf<Double>()) }
+    var compareList by remember { mutableStateOf(listOf<CompareEntry>()) }
 
     Column(modifier = modifier.padding(16.dp)) {
         OutlinedTextField(
@@ -73,7 +75,9 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
         if (showCompare && result != null) {
             Button(
                 onClick = {
-                    compareList = compareList + result!!
+                    val priceVal = price.toDoubleOrNull()!!
+                    val volumeVal = volume.toDoubleOrNull()!!
+                    compareList = compareList + CompareEntry(priceVal, volumeVal, result!!)
                     showCompare = false
                     result = null
                     price = ""
@@ -81,15 +85,38 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Compare")
+                Text("Add to Compare")
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
         if (compareList.isNotEmpty()) {
             Text("Comparison Table:", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            // Заголовки таблицы
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Price", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                Text("Volume", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                Text("Compare", modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+            }
+            Divider()
             LazyColumn {
-                items(compareList) { item ->
-                    Text("${"%.2f".format(item)}", modifier = Modifier.padding(4.dp))
+                items(compareList) { entry ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("%.2f".format(entry.price), modifier = Modifier.weight(1f))
+                        Text("%.2f".format(entry.volume), modifier = Modifier.weight(1f))
+                        Text("%.2f".format(entry.result), modifier = Modifier.weight(1f))
+                    }
+                    Divider()
                 }
             }
         }
