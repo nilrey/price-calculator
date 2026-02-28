@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -56,100 +57,126 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
     var lastPrice by remember { mutableStateOf<Double?>(null) }
     var lastVolume by remember { mutableStateOf<Double?>(null) }
 
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(
-            text = stringResource(R.string.info_text),
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        OutlinedTextField(
-            value = price,
-            onValueChange = { price = it },
-            label = { Text(stringResource(R.string.label_price)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = volume,
-            onValueChange = { volume = it },
-            label = { Text(stringResource(R.string.label_volume)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = {
-                val priceVal = price.toDoubleOrNull()
-                val volumeVal = volume.toDoubleOrNull()
-                if (priceVal != null && volumeVal != null && volumeVal != 0.0) {
-                    result = (priceVal * 1000) / volumeVal
-                    lastPrice = priceVal
-                    lastVolume = volumeVal
-                    showCompare = true
-                    price = ""
-                    volume = ""
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.button_calculate))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        if (result != null) {
+    LazyColumn(modifier = modifier.padding(16.dp)) {
+        item {
             Text(
-                "%.1f".format(result),
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 48.sp,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                text = stringResource(R.string.info_text),
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
-        if (showCompare && result != null) {
+        item {
+            OutlinedTextField(
+                value = price,
+                onValueChange = { price = it },
+                label = { Text(stringResource(R.string.label_price)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        item {
+            OutlinedTextField(
+                value = volume,
+                onValueChange = { volume = it },
+                label = { Text(stringResource(R.string.label_volume)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        item {
             Button(
                 onClick = {
-                    compareList = compareList + CompareEntry(lastPrice!!, lastVolume!!, result!!)
-                    showCompare = false
-                    result = null
+                    val priceVal = price.toDoubleOrNull()
+                    val volumeVal = volume.toDoubleOrNull()
+                    if (priceVal != null && volumeVal != null && volumeVal != 0.0) {
+                        result = (priceVal * 1000) / volumeVal
+                        lastPrice = priceVal
+                        lastVolume = volumeVal
+                        showCompare = true
+                        price = ""
+                        volume = ""
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.button_add_to_compare))
+                Text(stringResource(R.string.button_calculate))
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        if (compareList.isNotEmpty()) {
-            Text(stringResource(R.string.label_comparison_table), style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            // Заголовки таблицы
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(stringResource(R.string.column_price), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
-                Text(stringResource(R.string.column_volume), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
-                Text(stringResource(R.string.column_compare), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        if (result != null) {
+            item {
+                Text(
+                    "%.1f".format(result),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 48.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
             }
-            Divider()
-            LazyColumn {
-                items(count = compareList.size) { index ->
-                    val entry = compareList[index]
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text("%.2f".format(entry.price), modifier = Modifier.weight(1f))
-                        Text("%.2f".format(entry.volume), modifier = Modifier.weight(1f))
-                        Text("%.2f".format(entry.result), modifier = Modifier.weight(1f))
-                    }
-                    Divider()
+        }
+        if (showCompare && result != null) {
+            item {
+                Button(
+                    onClick = {
+                        compareList = compareList + CompareEntry(lastPrice!!, lastVolume!!, result!!)
+                        showCompare = false
+                        result = null
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.button_add_to_compare))
                 }
+            }
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+        if (compareList.isNotEmpty()) {
+            item {
+                Text(stringResource(R.string.label_comparison_table), style = MaterialTheme.typography.titleMedium)
+            }
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            // Заголовки таблицы
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.column_price), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.column_volume), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.column_compare), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                }
+            }
+            item {
+                Divider()
+            }
+            items(count = compareList.size) { index ->
+                val entry = compareList[index]
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("%.2f".format(entry.price), modifier = Modifier.weight(1f))
+                    Text("%.2f".format(entry.volume), modifier = Modifier.weight(1f))
+                    Text("%.2f".format(entry.result), modifier = Modifier.weight(1f))
+                }
+                Divider()
             }
         }
     }
