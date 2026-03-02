@@ -9,4 +9,9 @@
     <string name="column_price">Цена</string>
     <string name="column_volume">Объём</string>
     <string name="column_compare">Сравнение</string>
+    <string name="button_reset">Сбросить</string>
+    <string name="dialog_reset_title">Сброс результатов</string>
+    <string name="dialog_reset_text">Вы уверены, что хотите сбросить все результаты сравнения?</string>
+    <string name="button_confirm">Да</string>
+    <string name="button_cancel">Отмена</string>
 </resources>

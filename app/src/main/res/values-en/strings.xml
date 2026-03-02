@@ -9,4 +9,9 @@
     <string name="column_price">Price</string>
     <string name="column_volume">Volume</string>
     <string name="column_compare">Compare</string>
+    <string name="button_reset">Reset</string>
+    <string name="dialog_reset_title">Reset Results</string>
+    <string name="dialog_reset_text">Are you sure you want to reset all comparison results?</string>
+    <string name="button_confirm">Yes</string>
+    <string name="button_cancel">Cancel</string>
 </resources>

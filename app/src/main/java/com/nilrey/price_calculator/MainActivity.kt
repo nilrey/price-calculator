@@ -58,6 +58,14 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
     var compareList by remember { mutableStateOf(listOf<CompareEntry>()) }
     var lastPrice by remember { mutableStateOf<Double?>(null) }
     var lastVolume by remember { mutableStateOf<Double?>(null) }
+    var sortAscending by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
+
+    val sortedList = if (sortAscending) {
+        compareList.sortedBy { it.result }
+    } else {
+        compareList.sortedByDescending { it.result }
+    }
 
     LazyColumn(
         modifier = modifier
@@ -152,10 +160,50 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
         }
         if (compareList.isNotEmpty()) {
             item {
-                Text(stringResource(R.string.label_comparison_table), style = MaterialTheme.typography.titleMedium)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(stringResource(R.string.label_comparison_table), style = MaterialTheme.typography.titleMedium)
+                    Row {
+                        TextButton(onClick = { sortAscending = !sortAscending }) {
+                            val arrow = if (sortAscending) "↑" else "↓"
+                            Text("$arrow ${stringResource(R.string.column_compare)}")
+                        }
+                        TextButton(onClick = { showResetDialog = true }) {
+                            Text(stringResource(R.string.button_reset))
+                        }
+                    }
+                }
             }
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
+            if (showResetDialog) {
+                item {
+                    AlertDialog(
+                        onDismissRequest = { showResetDialog = false },
+                        title = { Text(stringResource(R.string.dialog_reset_title)) },
+                        text = { Text(stringResource(R.string.dialog_reset_text)) },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    compareList = emptyList()
+                                    result = null
+                                    showCompare = false
+                                    showResetDialog = false
+                                }
+                            ) {
+                                Text(stringResource(R.string.button_confirm))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showResetDialog = false }) {
+                                Text(stringResource(R.string.button_cancel))
+                            }
+                        }
+                    )
+                }
             }
             // Заголовки таблицы
             item {
@@ -173,8 +221,8 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
             item {
                 Divider()
             }
-            items(count = compareList.size) { index ->
-                val entry = compareList[index]
+            items(count = sortedList.size) { index ->
+                val entry = sortedList[index]
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
